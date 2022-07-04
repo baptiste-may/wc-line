@@ -68,7 +68,7 @@ header {
 #rooms {
     display: grid;
     grid-template-columns: 1fr;
-    align-items: stretch;
+    align-items: center;
     justify-items: center;
     position: fixed;
     top: 150px;
@@ -82,16 +82,27 @@ header {
 #rooms-text {
     font-size: 2em;
 }
-#no-room {
+.room {
     text-align: center;
 }
-#no-room img {
+.room img {
+    position: relative;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-    width: 50%;
+    width: 75%;
     height: auto;
+    cursor: pointer;
 }
-#no-room p {
+.room img:hover {
+    content: url("imgs/book-open.svg");
+}
+.room p {
     font-size: 1.5em;
+}
+.room input {
+    font-size: 1em;
+    background: none;
+    border: none;
+    border-bottom: 6px solid white;
 }
 #add-room {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);

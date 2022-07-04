@@ -3,6 +3,8 @@ const { Socket } = require('socket.io');
 
 const express = require("express");
 
+const $ = require("jquery");
+
 const app = express();
 const http = require("http").createServer(app);
 const path = require("path");
@@ -13,8 +15,12 @@ const port = 3000;
 */
 const io = require("socket.io")(http);
 
-const fs = require("fs");
+const fs = require('fs');
 const fileName = "data.json";
+
+function getFile() {
+    return JSON.parse(fs.readFileSync(fileName, "utf-8"));
+}
 
 app.use("/jquery", express.static(path.join(__dirname, "node_modules/jquery/dist")));
 app.use(express.static("public"));
@@ -28,7 +34,16 @@ http.listen(port, () => {
 });
 
 io.on("connection", (socket) => {
-    
+    socket.on("new-user", (uuid, username) => {
+        data = JSON.parse(fs.readFileSync(fileName, "utf-8"));
+        data.users[uuid] = {"name": username, "rooms": []};
+        fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
+            socket.emit("new-user-confirm");
+        });
+    });
+    socket.on("get-rooms", (uuid) => {
+        socket.emit("get-rooms", getFile().users[uuid].rooms);
+    });
 });
 
 function createRoom(dataToAdd) {
