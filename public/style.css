@@ -1,5 +1,6 @@
 * {
     font-family: 'Step Down', sans-serif;
+    color: white;
 }
 header {
     display: flex;
@@ -27,13 +28,36 @@ header {
     font-size: 5em;
 }
 #rooms {
-    display: table;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    justify-items: center;
     position: fixed;
-    top: 0;
+    top: 150px;
     left: 0;
-    width: 500px;
-    height: 100%;
-    transform: translateX(-500px);
+    width: 250px;
+    height: calc(100% - 150px);
+    transform: translateX(-250px);
     background-color: aquamarine;
     transition: all 1s ease-in-out;
+}
+#rooms-text {
+    font-size: 2em;
+}
+#no-room {
+    text-align: center;
+}
+#no-room img {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+    width: 50%;
+    height: auto;
+}
+#no-room p {
+    font-size: 1.5em;
+}
+#add-room {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+    width: 50%;
+    height: auto;
+    cursor: pointer;
 }
