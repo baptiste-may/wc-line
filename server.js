@@ -35,7 +35,7 @@ http.listen(port, () => {
 
 io.on("connection", (socket) => {
     socket.on("new-user", (uuid, username) => {
-        data = JSON.parse(fs.readFileSync(fileName, "utf-8"));
+        data = getFile();
         data.users[uuid] = {"name": username, "rooms": []};
         fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
             socket.emit("new-user-confirm");
@@ -44,14 +44,24 @@ io.on("connection", (socket) => {
     socket.on("get-rooms", (uuid) => {
         socket.emit("get-rooms", getFile().users[uuid].rooms);
     });
+    socket.on("try-add-room", (userID, id) => {
+        data = getFile();
+        if (id in data.rooms) {
+            data.users[userID].rooms.push(id);
+            fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
+                socket.emit("new-user-confirm");
+            });
+            socket.emit("try-add-room", true);
+        } else {
+            socket.emit("try-add-room", false);
+        }
+    })
+    socket.on("create-room", (userID, id) => {
+        data = getFile();
+        data.rooms[id] = [];
+        data.users[userID].rooms.push(id);
+        fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
+            socket.emit("create-room-confirm");
+        });
+    });
 });
-
-function createRoom(dataToAdd) {
-    fs.readFile(fileName, "utf8", (err, data) => {
-        if (err) console.log(err);
-        else {
-        obj = JSON.parse(data);
-        obj.rooms.push(dataToAdd);
-        fs.writeFile(fileName, JSON.stringify(obj), "utf8", () => {});
-    }});
-}

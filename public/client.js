@@ -46,4 +46,12 @@ function setup() {
         }
     })
 
+    socket.on("try-add-room", (good) => {
+        if (good) document.location.reload(true);
+    });
+
+    socket.on("create-room-confirm", () => {
+        document.location.reload(true);
+    })
+
 }

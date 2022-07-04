@@ -8,6 +8,7 @@
     <title>WC Line</title>
 </head>
 <body>
+    <img src="imgs/book-open.svg" hidden>
     <div id="ask-name">
         <form id="ask-name-form">
             <h1>Quel est ton nom ?</h1>
@@ -27,6 +28,24 @@
             <p>Pas de maisons à afficher !</p>
         </div>
         <img id="add-room" src="imgs/plus-circle.svg">
+    </div>
+    <div id="new-room">
+        <div id="new-room-tab">
+            <h1>Ajouter une maison...</h1>
+            <div id="new-room-metode">
+                <form id="new-room-by-join">
+                    <h1>Par identifiant</h1>
+                    <input type="text" placeholder="Entrez l'identifiant" id="new-room-by-join-id" minlength="9" maxlength="9" autocomplete="off" required>
+                    <br><br>
+                    <input type="submit" value="Accèder à la maison">
+                </form>
+                <form id="new-room-by-create">
+                    <h1>Par création</h1>
+                    <input type="submit" value="Créer une maison">
+                </form>
+            </div>
+            <img id="close-new-room-tab" src="imgs/x-circle.svg">
+        </div>
     </div>
 
     <script src="/jquery/jquery.min.js"></script>
