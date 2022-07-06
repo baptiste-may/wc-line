@@ -18,6 +18,10 @@ const io = require("socket.io")(http);
 const fs = require('fs');
 const fileName = "data.json";
 
+fs.writeFile(fileName, JSON.stringify({"users":{},"rooms":{}}), (e) => {
+    if (e) console.log(e);
+});
+
 function getFile() {
     return JSON.parse(fs.readFileSync(fileName, "utf-8"));
 }
