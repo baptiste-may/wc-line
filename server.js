@@ -15,16 +15,21 @@ const port = 3000;
 */
 const io = require("socket.io")(http);
 
-const fs = require('fs');
-const fileName = "data.json";
+require('dotenv').config();
 
-fs.writeFile(fileName, JSON.stringify({"users":{},"rooms":{}}), (e) => {
-    if (e) console.log(e);
+const mysql = require('mysql');
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  ssl: { rejectUnauthorized: false }
 });
 
-function getFile() {
-    return JSON.parse(fs.readFileSync(fileName, "utf-8"));
-}
+db.connect((err) => {
+    if (err) throw err;
+    console.log("Connected to Database !");
+});
 
 app.use("/jquery", express.static(path.join(__dirname, "node_modules/jquery/dist")));
 app.use(express.static("public"));
@@ -39,33 +44,40 @@ http.listen(port, () => {
 
 io.on("connection", (socket) => {
     socket.on("new-user", (uuid, username) => {
-        data = getFile();
-        data.users[uuid] = {"name": username, "rooms": []};
-        fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
+        db.query(`INSERT INTO users VALUES ("${uuid}", "${username}")`, (err, res) => {
+            if (err) throw err;
             socket.emit("new-user-confirm");
         });
     });
     socket.on("get-rooms", (uuid) => {
-        socket.emit("get-rooms", getFile().users[uuid].rooms);
+        db.query(`SELECT room_id, room_name FROM rooms WHERE uuid = "${uuid}"`, (err, res) => {
+            if (err) throw err;
+            socket.emit("get-rooms", res);
+        })
     });
     socket.on("try-add-room", (userID, id) => {
-        data = getFile();
-        if (id in data.rooms) {
-            data.users[userID].rooms.push(id);
-            fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
-                socket.emit("new-user-confirm");
-            });
-            socket.emit("try-add-room", true);
-        } else {
-            socket.emit("try-add-room", false);
-        }
+        db.query(`SELECT room_id FROM rooms WHERE room_id = "${id}"`, (err, res) => {
+            if (err) throw err;
+            if (res.length != 0) { // IF HAS ROOM
+                db.query(`INSERT INTO rooms VALUES ("${userID}", "${id}", "${id}")`, (err, res) => {
+                    if (err) throw err;
+                    socket.emit("new-user-confirm");
+                });
+                socket.emit("try-add-room", true);
+            } else {
+                socket.emit("try-add-room", false);
+            }
+        });
     })
     socket.on("create-room", (userID, id) => {
-        data = getFile();
-        data.rooms[id] = [];
-        data.users[userID].rooms.push(id);
-        fs.writeFile(fileName, JSON.stringify(data), "utf8", () => {
+        db.query(`INSERT INTO rooms VALUES ("${userID}", "${id}", "${id}")`, (err, res) => {
+            if (err) throw err;
             socket.emit("create-room-confirm");
+        });
+    });
+    socket.on("edit-room-name", (userID, roomID, name) => {
+        db.query(`UPDATE rooms SET room_name = "${name}" WHERE (uuid = "${userID}" AND room_id = "${roomID}")`, (err, res) => {
+            if (err) throw err;
         });
     });
 });

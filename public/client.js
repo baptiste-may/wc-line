@@ -35,8 +35,8 @@ function setup() {
         if (data.length != 0) {
             $("#no-room").remove();
             for (i = 0; i < data.length; i++) {
-                const id = data[i];
-                let name = Cookies.get(id) || id;
+                const id = data[i].room_id;
+                const name = data[i].room_name;
                 const addedRoom = `<div class="room" id="room-${id}">
                                         <img src="imgs/book.svg">
                                         <p id="room-name-${id}" onclick="editRoomName('${id}')">${name}</p>
@@ -52,6 +52,6 @@ function setup() {
 
     socket.on("create-room-confirm", () => {
         document.location.reload(true);
-    })
+    });
 
 }

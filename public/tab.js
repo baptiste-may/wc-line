@@ -1,16 +1,29 @@
 
-tabOpened = false;
+roomsTabOpened = false;
 
 $("#show-hide-rooms").on("click", () => {
 
     const tab = $("#rooms");
-    const header = $("header");
 
-    tabOpened = ! tabOpened;
-    if (tabOpened) {
+    roomsTabOpened = ! roomsTabOpened;
+    if (roomsTabOpened) {
         tab.css("transform", "translateX(0px)");
     } else {
         tab.css("transform", "translateX(-250px)");
+    }
+});
+
+usersTabOpened = false;
+
+$("#show-hide-users").on("click", () => {
+
+    const tab = $("#users");
+
+    usersTabOpened = ! usersTabOpened;
+    if (usersTabOpened) {
+        tab.css("transform", "translateX(0px)");
+    } else {
+        tab.css("transform", "translateX(250px)");
     }
 });
 
@@ -18,11 +31,10 @@ $("#show-hide-rooms").on("click", () => {
 function editRoomNameEND(id) {
     let newName = $(`#room-name-${id}`).val();
     if (newName == "") newName = id;
-    console.log("unfocus avec l'ID '" + id + "' et avec le nom '" + newName + "'");
     $(`#room-name-${id}`).replaceWith(function () {
         return $(`<p id="room-name-${id}" onclick="editRoomName('${id}')">${newName}</p>`);
     });
-    Cookies.set(id, newName);
+    socket.emit("edit-room-name", Cookies.get("uuid"), id, newName);
 }
 
 function editRoomName(id) {
