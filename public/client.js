@@ -2,6 +2,22 @@
 const socket = io();
 
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return undefined;
+};
+
 function randomID() {
     return Math.random().toString(36).substr(2, 9);
 }
@@ -38,13 +54,21 @@ function setup() {
                 const id = data[i].room_id;
                 const name = data[i].room_name;
                 const addedRoom = `<div class="room" id="room-${id}">
-                                        <img src="imgs/book.svg">
+                                        <img src="imgs/book.svg" onclick="window.location.href = window.location.origin + '/?room=${id}'">
                                         <p id="room-name-${id}" onclick="editRoomName('${id}')">${name}</p>
                                     </div>`;
                 $(addedRoom).insertBefore($("#add-room"));
             }
         }
-    })
+    });
+
+    const roomID = getUrlParameter("room");
+    if (roomID != undefined) {
+        socket.emit("get-room-data", Cookies.get("uuid"), roomID);
+        socket.on("get-room-data", (data) => {
+            $("#room-title").text(data.roomName + " - " + data.roomID);
+        });
+    }
 
     socket.on("try-add-room", (good) => {
         if (good) document.location.reload(true);
@@ -55,3 +79,5 @@ function setup() {
     });
 
 }
+
+

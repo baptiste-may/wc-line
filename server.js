@@ -80,4 +80,14 @@ io.on("connection", (socket) => {
             if (err) throw err;
         });
     });
+
+    socket.on("get-room-data", (userID, roomID) => {
+        const data = {};
+        db.query(`SELECT * FROM rooms WHERE (uuid = "${userID}" AND room_id = "${roomID}")`, (err, res) => {
+            if (err) throw err;
+            data.roomID = res[0].room_id;
+            data.roomName = res[0].room_name;
+            socket.emit("get-room-data", data);
+        });
+    });
 });

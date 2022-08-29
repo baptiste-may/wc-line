@@ -1,31 +1,33 @@
 
 roomsTabOpened = false;
-
-$("#show-hide-rooms").on("click", () => {
-
-    const tab = $("#rooms");
-
-    roomsTabOpened = ! roomsTabOpened;
-    if (roomsTabOpened) {
-        tab.css("transform", "translateX(0px)");
-    } else {
-        tab.css("transform", "translateX(-250px)");
-    }
-});
-
 usersTabOpened = false;
 
-$("#show-hide-users").on("click", () => {
-
-    const tab = $("#users");
-
-    usersTabOpened = ! usersTabOpened;
-    if (usersTabOpened) {
-        tab.css("transform", "translateX(0px)");
-    } else {
-        tab.css("transform", "translateX(250px)");
-    }
+$("#show-hide-rooms").on("click", () => {
+    roomsTabOpened = ! roomsTabOpened;
+    usersTabOpened = false;
+    updateTabs();
 });
+
+$("#show-hide-users").on("click", () => {
+    usersTabOpened = ! usersTabOpened;
+    roomsTabOpened = false;
+    updateTabs();
+});
+
+function updateTabs() {
+    const bg = $("#room");
+    const tabRooms = $("#rooms");
+    const tabUsers = $("#users");
+
+    if (roomsTabOpened) tabRooms.css("transform", "translateX(0px)");
+    else tabRooms.css("transform", "translateX(-250px)");
+
+    if (usersTabOpened) tabUsers.css("transform", "translateX(0px)");
+    else tabUsers.css("transform", "translateX(250px)");
+
+    if (!roomsTabOpened && !usersTabOpened) bg.css("filter", "blur(0px)");
+    else bg.css("filter", "blur(5px)");
+}
 
 
 function editRoomNameEND(id) {

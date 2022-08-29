@@ -55,6 +55,7 @@ header {
     background-color: aqua;
     border-bottom: 5px solid white;
     transition: all 1s ease-in-out;
+    z-index: 13;
 }
 header img {
     position: absolute;
@@ -90,6 +91,7 @@ header img {
     border-top: 5px solid white;
     border-right: 5px solid white;
     transition: transform 1s ease-in-out;
+    z-index: 12;
 }
 #rooms-text {
     font-size: 2em;
@@ -175,6 +177,17 @@ header img {
     cursor: pointer;
 }
 
+#room {
+    position: fixed;
+    top: 155px;
+    left: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 155px - 53px);
+    text-align: center;
+    transition: filter 1s ease-in-out;
+    z-index: 11;
+}
+
 #users {
     display: grid;
     grid-template-columns: 1fr;
@@ -190,6 +203,7 @@ header img {
     border-top: 5px solid white;
     border-left: 5px solid white;
     transition: transform 1s ease-in-out;
+    z-index: 12;
 }
 #users-text {
     text-align: center;
@@ -206,4 +220,5 @@ footer {
     height: 50px;
     background-color: aqua;
     border-top: 3px solid white;
+    z-index: 13;
 }
