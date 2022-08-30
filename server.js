@@ -83,11 +83,29 @@ io.on("connection", (socket) => {
 
     socket.on("get-room-data", (userID, roomID) => {
         const data = {};
-        db.query(`SELECT * FROM rooms WHERE (uuid = "${userID}" AND room_id = "${roomID}")`, (err, res) => {
+        db.query(`SELECT * FROM rooms WHERE room_id = "${roomID}"`, (err1, res1) => {
+            if (err1) throw err1;
+            data.users = [];
+            for (i = 0; i < res1.length; i++) {
+                const localData = res1[i];
+                data.users.push(localData.uuid);
+                if (localData.uuid == userID) {
+                    data.roomID = localData.room_id;
+                    data.roomName = localData.room_name;
+                }
+            }
+            db.query(`SELECT uuid, start_date, end_date FROM timeline WHERE (uuid = "${userID}" AND room_id = "${roomID}")`, (err2, res2) => {
+                if (err2) throw err2;
+                data.timeline = res2[0];
+                socket.emit("get-room-data", data);
+            });
+        });
+    });
+
+    socket.on("get-user-name", (userID, response) => {
+        db.query(`SELECT * FROM users WHERE uuid = "${userID}"`, (err, res) => {
             if (err) throw err;
-            data.roomID = res[0].room_id;
-            data.roomName = res[0].room_name;
-            socket.emit("get-room-data", data);
+            response(res[0].name);
         });
     });
 });

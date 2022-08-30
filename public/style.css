@@ -177,7 +177,10 @@ header img {
     cursor: pointer;
 }
 
+
 #room {
+    display: grid;
+    justify-items: center;
     position: fixed;
     top: 155px;
     left: 5px;
@@ -187,6 +190,7 @@ header img {
     transition: filter 1s ease-in-out;
     z-index: 11;
 }
+
 
 #users {
     display: grid;
@@ -208,6 +212,9 @@ header img {
 #users-text {
     text-align: center;
     font-size: 2em;
+}
+.user {
+    font-size: 1.75em;
 }
 
 footer {

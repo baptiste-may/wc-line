@@ -66,9 +66,22 @@ function setup() {
     if (roomID != undefined) {
         socket.emit("get-room-data", Cookies.get("uuid"), roomID);
         socket.on("get-room-data", (data) => {
-            $("#room-title").text(data.roomName + " - " + data.roomID);
+            console.log("Room data : ", data);
+            if (data.roomName == data.roomID) $("#room-title").text(data.roomName);
+            else $("#room-title").text(data.roomName + " - " + data.roomID);
+
+            $("#users-text").text("Membres actuels");
+            $("#users").css("align-items", "start");
+            const users = data.users;
+            for (i = 0; i < users.length; i++) {
+                const userID = users[i];
+                $("#users").append(`<p class="user" id="user-${userID}">${userID}</p>`);
+                socket.emit("get-user-name", userID, (name) => {
+                    $("#user-" + userID).text(name);
+                });
+            }
         });
-    }
+    } else $("#room").empty();
 
     socket.on("try-add-room", (good) => {
         if (good) document.location.reload(true);
